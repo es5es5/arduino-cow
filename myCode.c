@@ -11,6 +11,12 @@
 #define LED_MIDDLE 9
 #define LED_LATTER 10
 
+// 장소 현재 상태
+boolean former_status = false;
+boolean middle_status = false;
+boolean latter_status = false;
+
+
 void setup() {
   pinMode(PLACE_FORMER, OUTPUT);
   pinMode(PLACE_MIDDLE, OUTPUT);
@@ -26,11 +32,15 @@ void setup() {
 
 void loop() {
   // 버튼 누르면 해당하는 불이 들어온다.
-  if (digitalRead(BUTTON_FORMER) == HIGH) {
-    digitalWrite(LED_FORMER, HIGH);
-    delay(500);
-    digitalWrite(LED_FORMER, LOW);
-  } else if (digitalRead(BUTTON_MIDDLE) == HIGH){
+  if (digitalRead(BUTTON_FORMER) == HIGH || digitalRead(BUTTON_FORMER) == LOW) {
+    former_status = !former_status;
+    if (former_status == true) {
+      digitalWrite(LED_FORMER, HIGH);
+    } else if (former == false) {
+      digitalWrite(LED_FORMER, LOW);
+      delay(500);
+    }
+  } else if (digitalRead(BUTTON_MIDDLE) == HIGH) {
     digitalWrite(LED_MIDDLE, HIGH);
     delay(500);
     digitalWrite(LED_MIDDLE, LOW);

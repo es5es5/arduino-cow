@@ -21,7 +21,6 @@ unsigned long previous_time_middle = 0;
 unsigned long current_time_middle = 0;
 unsigned long previous_time_latter = 0;
 unsigned long current_time_latter = 0;
-char message = 0;
 int B=4250;
 
 SoftwareSerial BTSerial(BLUETOOTH_TX, BLUETOOTH_RX);
@@ -60,50 +59,56 @@ void loop() {
       digitalWrite(LED_FORMER, LOW);
       current_time_former = millis();
       unsigned long former_timer = current_time_former - previous_time_former;
+      Serial.println("");
       Serial.println("#########################");
       Serial.println("비육 전기 퇴장");
       Serial.print("체류 시간 : ");
       Serial.print(former_timer / 1000);
       Serial.println("분");
       Serial.println("#########################");
+      Serial.println("");
       delay(300);
     }
   }
   if (digitalRead(BUTTON_MIDDLE) == HIGH) {
     if (digitalRead(LED_MIDDLE) == LOW) { // 초기 LED 가 꺼져있으면
       digitalWrite(LED_MIDDLE, HIGH); // LED를 켜라
+      nowTemperature(2);
       previous_time_middle = millis();
       delay(300);
     } else if (digitalRead(LED_MIDDLE) == HIGH) { // 초기 LED 가 켜져있으면,
       digitalWrite(LED_MIDDLE, LOW);
       current_time_middle = millis();
       unsigned long middle_timer = current_time_middle - previous_time_middle;
-      nowTemperature(2);
+      Serial.println("");
       Serial.println("#########################");
       Serial.println("비육 중기 퇴장");
       Serial.print("체류 시간 : ");
       Serial.print(middle_timer / 1000);
       Serial.println("분");
       Serial.println("#########################");
+      Serial.println("");
       delay(300);
     }
   }
   if (digitalRead(BUTTON_LATTER) == HIGH) {
     if (digitalRead(LED_LATTER) == LOW) { // 초기 LED 가 꺼져있으면
       digitalWrite(LED_LATTER, HIGH); // LED를 켜라
-      previous_time_latter = millis();
       nowTemperature(3);
+      previous_time_latter = millis();
       delay(300);
     } else if (digitalRead(LED_LATTER) == HIGH) { // 초기 LED 가 켜져있으면,
       digitalWrite(LED_LATTER, LOW);
       current_time_latter = millis();
       unsigned long latter_timer = current_time_latter - previous_time_latter;
+      Serial.println("");
       Serial.println("#########################");
       Serial.println("비육 후기 퇴장");
       Serial.print("체류 시간 : ");
       Serial.print(latter_timer / 1000);
       Serial.println("분");
       Serial.println("#########################");
+      Serial.println("");
       delay(300);
     }
   }
@@ -121,11 +126,11 @@ void nowTemperature(int cow) {
   Serial.print(fTm);
   Serial.print("C\n");
   if (cow == 1) {
-    Serial.print("비육 초기 입장\n");
+    Serial.print("◆비육 초기 입장◆\n");
   } else if (cow == 2) {
-    Serial.print("비육 중기 입장\n");
+    Serial.print("▶비육 중기 입장◀\n");
   } else if (cow == 3) {
-    Serial.print("비육 후기 입장\n");
+    Serial.print("▣비육 후기 입장▣\n");
   }
   Serial.print("==============================\n");
   delay(1000);

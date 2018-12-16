@@ -2,7 +2,7 @@
 #include <math.h>
 
 #define TEMPERATURE A0 // 온도 센서
-#define BLUETOOTH_TX 2 // 사료조 EMPTY
+#define BLUETOOTH_TX 2  // 사료조 EMPTY
 #define BLUETOOTH_RX 3 // 사료조 EMPTY
 #define BUTTON_EMPTY 4 // 사료조 EMPTY
 
@@ -15,14 +15,16 @@
 #define LED_MIDDLE 9 // 중기 사조의 LED
 #define LED_LATTER 10 // 후기 사조의 LED
 
-SoftwareSerial BTSerial(BLUETOOTH_TX, BLUETOOTH_RX);
-
 unsigned long previous_time_former = 0;
 unsigned long current_time_former = 0;
 unsigned long previous_time_middle = 0;
 unsigned long current_time_middle = 0;
 unsigned long previous_time_latter = 0;
 unsigned long current_time_latter = 0;
+char message = 0;
+int B=4250;
+
+SoftwareSerial BTSerial(BLUETOOTH_TX, BLUETOOTH_RX);
 
 void setup() {
   Serial.begin(9600);
@@ -37,23 +39,15 @@ void setup() {
   pinMode(LED_LATTER, OUTPUT);
 }
 
-
 void loop() {
-  // 블루투스
-  // if(BTSerial.available() > 0) {
-  //   bluetooth = BTSerial.read();
-  //   Serial.println(bluetooth);
-    // if (digitalRead(BUTTON_EMPTY) == HIGH) {
-    //   Serial.println("블루투스 버튼 ON");
-    //   BTSerial.write("aaaaa");
-    //   delay(300);
-    // }
-  // }
-  // if(Serial.available()) {
-  //   Serial.println("ddd");
-  // }
+  float fTm;
+  if (digitalRead(BUTTON_EMPTY) == HIGH) {
+    Serial.println("버튼 누름");
+    BTSerial.print('a');
+    delay(500);
+  }
+
   // 버튼 누르면 해당하는 불이 들어온다.
-  Serial.println(BTSerial.available());
   if (digitalRead(BUTTON_FORMER) == HIGH) { // 초기 버튼을 누르면
     if (digitalRead(LED_FORMER) == LOW) { // 초기 LED 가 꺼져있으면
       digitalWrite(LED_FORMER, HIGH); // LED를 켜라
@@ -63,6 +57,7 @@ void loop() {
       digitalWrite(LED_FORMER, LOW);
       current_time_former = millis();
       unsigned long former_timer = current_time_former - previous_time_former;
+      nowTemperature;
       Serial.print("초기 사료조에서 체류 시간 : ");
       Serial.print(former_timer / 1000);
       Serial.println("초");
@@ -99,4 +94,17 @@ void loop() {
       delay(300);
     }
   }
+}
+
+void nowTemperature() {
+  float fTm;
+  int iInput = analogRead(TEMPERATURE);
+
+  float fR = (float)(1023-iInput)*10000/iInput;
+  fTm = 1/(log(fR/10000)/B + 1/298.15) - 273.15;
+
+  Serial.print("current Temperature: ");
+  Serial.print(fTm);
+  Serial.println("C");
+  delay(1000);
 }
